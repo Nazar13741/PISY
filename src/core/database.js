@@ -1,3 +1,5 @@
+// База данных SQLite (встроена в Node.js 22+, ничего устанавливать не нужно).
+// Чтобы изменить структуру базы - ДОБАВЬТЕ новый элемент в MIGRATIONS (старые не трогайте).
 const fs = require('node:fs');
 const path = require('node:path');
 const DatabaseDriver = require('better-sqlite3');
@@ -5,6 +7,7 @@ const { config, ROOT } = require('./config');
 const log = require('./logger').child('База');
 
 const MIGRATIONS = [
+    // v1 - начальная структура
     `
     CREATE TABLE characters (
         id            INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -46,7 +49,9 @@ const MIGRATIONS = [
         last_hash  TEXT,
         PRIMARY KEY (guild_id, user_id)
     );
+
     `,
+    // v2 - кураторы анкет, назначенные командой /curator
     `
     CREATE TABLE curators (
         guild_id  TEXT NOT NULL,
@@ -63,18 +68,17 @@ class Database {
         this.file = path.isAbsolute(file) ? file : path.join(ROOT, file);
         fs.mkdirSync(path.dirname(this.file), { recursive: true });
         this.db = new DatabaseDriver(this.file);
-        this.db.pragma('journal_mode = WAL');
-        this.db.pragma('foreign_keys = ON');
+        this.db.exec('PRAGMA journal_mode = WAL; PRAGMA foreign_keys = ON;');
         this.cache = new Map();
         this.migrate();
     }
 
     migrate() {
-        const current = this.db.pragma('user_version', { simple: true });
+        const current = this.db.prepare('PRAGMA user_version').get().user_version;
         for (let v = current; v < MIGRATIONS.length; v++) {
             this.transaction(() => {
                 this.db.exec(MIGRATIONS[v]);
-                this.db.pragma(`user_version = ${v + 1}`);
+                this.db.exec(`PRAGMA user_version = ${v + 1}`);
             });
             log.info(`Применена миграция базы v${v + 1}`);
         }
@@ -85,17 +89,14 @@ class Database {
         return this.cache.get(sql);
     }
 
-    clean(params) {
-        return params.map((p) => p === undefined ? null : typeof p === 'boolean' ? Number(p) : p);
-    }
-
+    clean(params) { return params.map((p) => (p === undefined ? null : typeof p === 'boolean' ? Number(p) : p)); }
     run(sql, ...p) { return this.stmt(sql).run(...this.clean(p)); }
     get(sql, ...p) { return this.stmt(sql).get(...this.clean(p)); }
     all(sql, ...p) { return this.stmt(sql).all(...this.clean(p)); }
 
     transaction(fn) {
-        const execute = this.db.transaction(fn);
-        return execute();
+        this.db.exec('BEGIN');
+        try { const r = fn(); this.db.exec('COMMIT'); return r; } catch (e) { this.db.exec('ROLLBACK'); throw e; }
     }
 
     async backup() {
