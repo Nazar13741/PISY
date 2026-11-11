@@ -1,4 +1,4 @@
-
+// Персонажи: создание, поиск, изменение и здоровье.
 const db = require('../core/database');
 const { config } = require('../core/config');
 
@@ -16,7 +16,8 @@ const findIn = (list, name) => list.find((x) => x.name.toLowerCase() === String(
 const findRace = (name) => findIn(config.characters.races, name);
 const findClass = (name) => findIn(config.characters.classes, name);
 
-
+/** Стартовые характеристики = база + бонусы расы и класса (если заданы в конфиге).
+ *  Верхнего предела нет. Очков при создании не выдаётся - значения меняют только админы и кураторы через /char redact. */
 function startingStats(race, cls) {
     const stats = Object.fromEntries(S.list.map((s) => [s.key, S.base]));
     for (const src of [findRace(race), findClass(cls)]) {
@@ -78,7 +79,7 @@ function remove(character) {
     });
 }
 
-
+/** Поиск для автодополнения по имени или ID */
 function search(guildId, query, { userId } = {}) {
     const q = `%${String(query || '').trim()}%`;
     const idq = Number(query) || -1;
@@ -93,7 +94,7 @@ function maxHp(ch) {
     return config.hp.base + con * config.hp.perCon + (ch.level - 1) * config.hp.perLevel;
 }
 
-
+/** Предел характеристики отсутствует (ТЗ: «хар-ки неограниченные») */
 function statCap() { return null; }
 
 module.exports = {

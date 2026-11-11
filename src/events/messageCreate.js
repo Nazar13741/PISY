@@ -1,4 +1,4 @@
-
+// Опыт за сообщения в РП-каналах (с защитой от спама).
 const { Events } = require('discord.js');
 const crypto = require('node:crypto');
 const { config } = require('../core/config');
@@ -22,7 +22,7 @@ module.exports = {
         if (!M.enabled || !message.inGuild() || message.author.bot || message.webhookId) return;
         if (!isRpChannel(message.channel)) return;
 
-        
+        // Длина без ссылок и лишних пробелов
         const text = message.content.replace(/https?:\/\/\S+/g, '').replace(/\s+/g, ' ').trim();
         if (text.length < M.minLength) return;
 
@@ -33,9 +33,9 @@ module.exports = {
             || { last_at: 0, day: today, day_xp: 0, last_hash: null };
         const dayXp = row.day === today ? row.day_xp : 0;
 
-        if (now - row.last_at < M.cooldownSeconds * 1000) return;  
-        if (row.last_hash === hash) return;                         
-        if (dayXp >= M.dailyCap) return;                            
+        if (now - row.last_at < M.cooldownSeconds * 1000) return;  // слишком часто
+        if (row.last_hash === hash) return;                         // копипаста
+        if (dayXp >= M.dailyCap) return;                            // дневной лимит
 
         const ch = characters.getActive(message.guildId, message.author.id);
         if (!ch) return;

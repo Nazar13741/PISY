@@ -1,4 +1,4 @@
-
+// Сообщение о новом уровне.
 const { config } = require('../core/config');
 const ui = require('../ui/components');
 const logger = require('../core/logger');

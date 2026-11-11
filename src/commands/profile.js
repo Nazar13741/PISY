@@ -1,4 +1,4 @@
-
+// /profile - карточка персонажа: характеристики, краткое описание, аватар.
 const { SlashCommandBuilder } = require('discord.js');
 const ui = require('../ui/components');
 const { autocompleteCharacters, resolveCharacter } = require('../utils/targets');

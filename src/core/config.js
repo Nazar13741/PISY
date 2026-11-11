@@ -1,4 +1,4 @@
-
+// Загружает .env и config/config.js, проверяет их и выдаёт понятные ошибки.
 const fs = require('node:fs');
 const path = require('node:path');
 

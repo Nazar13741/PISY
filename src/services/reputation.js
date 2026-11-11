@@ -1,4 +1,4 @@
-
+// Репутация: по фракциям или один общий счётчик (reputation.mode).
 const db = require('../core/database');
 const { config } = require('../core/config');
 
@@ -10,7 +10,7 @@ function factions() {
 
 function rank(value) { return R.ranks.find((r) => value >= r.min) || R.ranks[R.ranks.length - 1]; }
 
-
+/** [{ faction, value, rank }] */
 function list(characterId) {
     const rows = db.all('SELECT faction, value FROM reputation WHERE character_id = ?', characterId);
     const map = Object.fromEntries(rows.map((r) => [r.faction, r.value]));

@@ -1,5 +1,5 @@
-
-
+// Предпросмотр карточки профиля без Discord: npm run preview → preview.png
+//   npm run preview -- путь/к/арту.png   - со своим артом
 const fs = require('node:fs');
 const path = require('node:path');
 const { config } = require('../src/core/config');

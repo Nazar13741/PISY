@@ -1,4 +1,4 @@
-
+// Элементы профиля: profile:pick:<владелец> (выбор персонажа), profile:active:<id>
 const ui = require('../ui/components');
 const characters = require('../services/characters');
 const { profilePayload } = require('../ui/profileView');

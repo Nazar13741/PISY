@@ -1,4 +1,4 @@
-
+// Список разделов в /menu
 const ui = require('../ui/components');
 
 module.exports = {

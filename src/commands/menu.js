@@ -1,4 +1,4 @@
-
+// /menu - описание бота и полный список команд (собирается из папки commands).
 const { SlashCommandBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
 const { config } = require('../core/config');
 const ui = require('../ui/components');

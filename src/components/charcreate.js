@@ -1,4 +1,4 @@
-
+// Форма создания персонажа: charcreate:<токен>
 const { ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder } = require('discord.js');
 const { config } = require('../core/config');
 const ui = require('../ui/components');
@@ -8,7 +8,7 @@ const logger = require('../core/logger');
 const { isCurator } = require('../core/permissions');
 
 const log = logger.child('Создание');
-const pending = new Map(); 
+const pending = new Map(); // токен → данные команды (15 минут)
 
 function input(id, label, style, { required = false, max = 100, placeholder } = {}) {
     const t = new TextInputBuilder().setCustomId(id).setLabel(label).setStyle(style).setRequired(required).setMaxLength(max);
@@ -16,7 +16,7 @@ function input(id, label, style, { required = false, max = 100, placeholder } = 
     return new ActionRowBuilder().addComponents(t);
 }
 
-
+/** data = { name, race, cls, avatarUrl, ownerId } - ownerId: игрок, которому выдаётся персонаж */
 async function showForm(interaction, data) {
     for (const [k, v] of pending) if (v.expires < Date.now()) pending.delete(k);
     const token = Math.random().toString(36).slice(2, 10);

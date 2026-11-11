@@ -1,5 +1,5 @@
-
-
+// Регистрация слэш-команд в Discord.
+// Запуск вручную: npm run deploy   (также вызывается при старте, если bot.autoDeployCommands = true)
 const { REST, Routes, Collection } = require('discord.js');
 const logger = require('./core/logger');
 

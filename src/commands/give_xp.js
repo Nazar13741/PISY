@@ -1,4 +1,4 @@
-
+// /give_xp - ручная выдача опыта мастером за качественный пост.
 const { SlashCommandBuilder } = require('discord.js');
 const { config } = require('../core/config');
 const ui = require('../ui/components');

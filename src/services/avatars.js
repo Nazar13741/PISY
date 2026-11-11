@@ -1,4 +1,4 @@
-
+// Сохраняет аватары персонажей на диск (ссылки Discord на вложения со временем «протухают»).
 const fs = require('node:fs');
 const path = require('node:path');
 const { config, ROOT } = require('../core/config');
@@ -6,7 +6,7 @@ const { config, ROOT } = require('../core/config');
 const DIR = path.join(ROOT, 'data', 'avatars');
 const EXT = { 'image/png': 'png', 'image/jpeg': 'jpg', 'image/webp': 'webp', 'image/gif': 'gif' };
 
-
+/** Скачивает картинку по ссылке и сохраняет. Возвращает имя файла. */
 async function saveFromUrl(characterId, url) {
     const res = await fetch(url);
     if (!res.ok) throw new Error(`Не удалось скачать изображение (HTTP ${res.status}).`);

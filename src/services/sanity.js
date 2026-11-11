@@ -1,4 +1,4 @@
-
+// Рассудок / стресс: пороги, штрафы к броскам, временное безумие.
 const { config } = require('../core/config');
 const characters = require('./characters');
 
@@ -12,12 +12,12 @@ function activeMadness(ch) {
     return ch.madness && ch.madness_until && ch.madness_until > Date.now() ? { effect: ch.madness, until: ch.madness_until } : null;
 }
 
-
+/** Общий штраф к броскам от рассудка и приступа безумия */
 function rollPenalty(ch) {
     return state(ch.sanity).penalty + (activeMadness(ch) ? SN.madness.extraPenalty : 0);
 }
 
-
+/** Поля для записи нового значения рассудка (+ приступ, если опустился ниже порога) */
 function fieldsFor(ch, value) {
     const before = ch.sanity;
     const after = Math.max(0, Math.min(SN.max, value));

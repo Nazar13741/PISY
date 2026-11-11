@@ -1,10 +1,10 @@
-
+// Точка входа бота. Запуск: npm start
 const [major, minor] = process.versions.node.split('.').map(Number);
-if (major < 20 || (major === 20 && minor < 20)) {
-    console.error(`Нужен Node.js 20.20.2 или новее (у вас ${process.versions.node}). Скачайте LTS: https://nodejs.org`);
+if (major < 22 || (major === 22 && minor < 13)) {
+    console.error(`Нужен Node.js 22.13 или новее (у вас ${process.versions.node}). Скачайте LTS: https://nodejs.org`);
     process.exit(1);
 }
-
+// Прячем предупреждение «SQLite is an experimental feature»
 const emit = process.emitWarning;
 process.emitWarning = (w, ...a) => (String(w).includes('SQLite') ? undefined : emit.call(process, w, ...a));
 

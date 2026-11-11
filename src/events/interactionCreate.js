@@ -1,4 +1,4 @@
-
+// Маршрутизатор: слэш-команды, подсказки, кнопки, списки и формы.
 const { Events, Collection } = require('discord.js');
 const ui = require('../ui/components');
 const logger = require('../core/logger');
@@ -12,7 +12,7 @@ async function fail(interaction, error, where) {
     const code = Math.random().toString(36).slice(2, 8).toUpperCase();
     log.error(`[#${code}] ${where} (${interaction.user?.tag}):`, error);
     logger.discord('errors', { title: `Ошибка #${code}`, accent: 'danger', body: `**${where}** · <@${interaction.user?.id}>\n\`\`\`\n${String(error?.stack || error).slice(0, 1500)}\n\`\`\`` });
-    try { await ui.replyError(interaction, `Что-то пошло не так. Код ошибки: **#${code}** - передайте его администратору.`); } catch {  }
+    try { await ui.replyError(interaction, `Что-то пошло не так. Код ошибки: **#${code}** - передайте его администратору.`); } catch { /* ответить уже нельзя */ }
 }
 
 module.exports = {
@@ -23,14 +23,14 @@ module.exports = {
             return;
         }
 
-        
+        // ── Подсказки (автодополнение) ──
         if (interaction.isAutocomplete()) {
             const cmd = client.commands.get(interaction.commandName);
             try { await cmd?.autocomplete?.(interaction); } catch (e) { log.warn(`Автодополнение /${interaction.commandName}: ${e.message}`); }
             return;
         }
 
-        
+        // ── Слэш-команды ──
         if (interaction.isChatInputCommand()) {
             const cmd = client.commands.get(interaction.commandName);
             if (!cmd) return;
@@ -49,7 +49,7 @@ module.exports = {
             return;
         }
 
-        
+        // ── Кнопки, выпадающие списки, формы: customId = "обработчик:арг1:арг2" ──
         if (interaction.isButton() || interaction.isAnySelectMenu() || interaction.isModalSubmit()) {
             const [id, ...args] = interaction.customId.split(':');
             const comp = client.components.get(id) || [...client.components.values()].find((c) => c.aliases?.includes(id));

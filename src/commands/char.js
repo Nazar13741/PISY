@@ -1,5 +1,5 @@
-
-
+// /char create - создание анкеты и выдача её игроку (только админы и кураторы)
+// /char redact - редактирование анкеты и статов (только админы и кураторы)
 const { SlashCommandBuilder } = require('discord.js');
 const { config } = require('../core/config');
 const ui = require('../ui/components');
@@ -39,7 +39,7 @@ module.exports = {
     },
 };
 
-
+/** Проверка значения по списку из конфига (пустой список = свободный ввод) */
 function checkOption(value, list, allowCustom, label) {
     if (!list.length || allowCustom) return { value: list.find((x) => x.name.toLowerCase() === value.toLowerCase())?.name || value };
     const found = list.find((x) => x.name.toLowerCase() === value.toLowerCase());

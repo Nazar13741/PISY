@@ -1,4 +1,4 @@
-
+// Подсказки персонажей и поиск «какой персонаж имеется в виду».
 const characters = require('../services/characters');
 
 async function autocompleteCharacters(interaction, { own = false } = {}) {
@@ -10,7 +10,7 @@ async function autocompleteCharacters(interaction, { own = false } = {}) {
     })));
 }
 
-
+/** По опции «персонаж» (ID/имя) или «игрок» (его активный персонаж). self - по умолчанию автор команды */
 function resolveCharacter(interaction, { self = true } = {}) {
     const charOpt = interaction.options.getString('персонаж');
     const user = interaction.options.getUser('игрок');

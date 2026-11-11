@@ -1,5 +1,5 @@
-
-
+// /curator - администрация назначает людей, которые могут создавать и выдавать
+// персонажей и редактировать анкеты/статы (/char create, /char redact).
 const { SlashCommandBuilder } = require('discord.js');
 const { config } = require('../core/config');
 const ui = require('../ui/components');

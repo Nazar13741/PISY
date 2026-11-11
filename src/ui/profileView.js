@@ -1,5 +1,5 @@
-
-
+// Сообщение профиля на Components V2: карточка-картинка + анкета, характеристики,
+// рассудок, репутация. Снизу - выбор персонажа игрока и кнопки владельца.
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder, AttachmentBuilder } = require('discord.js');
 const fs = require('node:fs');
 const pathMod = require('node:path');
@@ -54,7 +54,7 @@ function controls(ch, list, viewer) {
     return rows;
 }
 
-
+/** Собирает сообщение профиля. guild, viewer - для названия сервера на карточке и кнопок админа */
 async function profilePayload(ch, { client, guild, viewer } = {}) {
     const files = [];
     const list = characters.listByUser(ch.guild_id, ch.user_id);
@@ -80,7 +80,7 @@ async function profilePayload(ch, { client, guild, viewer } = {}) {
     const head = `# ${ch.name}\n**${ch.race}** · **${ch.class}** · уровень ${ch.level}`;
     if (cardOk) blocks.push(ui.text(head));
     else {
-        
+        // без картинки - аватар миниатюрой справа от заголовка
         const file = avatars.filePath(ch.avatar_file);
         let thumb = ownerAvatarUrl;
         if (file && fs.existsSync(file)) {

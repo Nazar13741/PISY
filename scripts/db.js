@@ -1,13 +1,13 @@
-
-
-
-
-
-
-
-
-
-
+// Локальная база данных - инструменты без Discord.
+// База - это ОДИН файл data/grimoire.db (SQLite). Сервер, MySQL, пароли - не нужны.
+// Открыть его можно и вручную, например программой «DB Browser for SQLite».
+//
+//   npm run db                       - сводка: где лежит файл, сколько персонажей
+//   npm run db -- list               - список всех персонажей
+//   npm run db -- show 3             - один персонаж подробно (по номеру листа)
+//   npm run db -- demo <серверID> <пользовательID>  - создать 3 демо-персонажа
+//   npm run db -- backup             - резервная копия в data/backups
+//   npm run db -- reset --yes        - удалить ВСЕ данные (сначала делается копия)
 const fs = require('node:fs');
 const db = require('../src/core/database');
 const characters = require('../src/services/characters');

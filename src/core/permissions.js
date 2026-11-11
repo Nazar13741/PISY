@@ -1,7 +1,7 @@
-
-
-
-
+// Проверка прав:
+//   админ   - всё, включая назначение кураторов;
+//   куратор - создаёт персонажей игрокам и редактирует анкеты/статы (/char create, /char redact);
+//   мастер  - опыт (/give_xp).
 const { PermissionFlagsBits } = require('discord.js');
 const { config } = require('./config');
 
@@ -15,7 +15,7 @@ function isAdmin(member) {
     return config.permissions.discordAdminsAreAdmins && member.permissions?.has(PermissionFlagsBits.Administrator);
 }
 
-
+/** Куратор анкет: админ, роль/ID из конфига или назначенный через /curator */
 function isCurator(member) {
     if (!member) return false;
     if (isAdmin(member)) return true;
@@ -30,7 +30,7 @@ function isMaster(member) {
     return isAdmin(member) || hasRole(member, config.permissions.masterRoleIds);
 }
 
-
+/** Уровни доступа команд: 'everyone' | 'master' | 'curator' | 'admin' */
 function canUse(member, level = 'everyone') {
     if (level === 'admin') return isAdmin(member);
     if (level === 'curator') return isCurator(member);

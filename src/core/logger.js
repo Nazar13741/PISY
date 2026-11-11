@@ -1,4 +1,4 @@
-
+// Логгер: цветная консоль + файлы в logs/ + отправка в Discord-каналы логов.
 const fs = require('node:fs');
 const path = require('node:path');
 const { config, ROOT } = require('./config');
@@ -37,7 +37,7 @@ function write(level, scope, args) {
     if (level === 'error') fs.appendFile(path.join(LOG_DIR, 'errors.log'), line + '\n', () => {});
 }
 
-
+/** Удаляет файлы логов старше logging.keepDays дней */
 function cleanupOldLogs() {
     if (!config.logging.toFile) return;
     const limit = Date.now() - config.logging.keepDays * 86400000;
@@ -47,7 +47,7 @@ function cleanupOldLogs() {
     }
 }
 
-
+/** Создаёт логгер с подписью: const log = logger.child('Персонажи') */
 function child(scope) {
     return {
         debug: (...a) => write('debug', scope, a),
@@ -59,7 +59,10 @@ function child(scope) {
 
 function attachClient(client) { discordClient = client; }
 
-
+/**
+ * Запись в Discord-канал логов (Components V2).
+ * category: 'characters' | 'xp' | 'sanity' | 'reputation' | 'errors' | другое → default
+ */
 async function discord(category, { title, body = '', accent = 'muted' }) {
     const channelId = config.logging.channels[category] || config.logging.channels.default;
     if (!discordClient || !channelId) return;

@@ -1,6 +1,6 @@
-
-
-
+// Сборка сообщений на Components V2: контейнер с акцентной полосой, текстовые блоки,
+// разделители (картинка с завитками или линия), кнопки и списки внутри контейнера.
+// Все сообщения бота собираются через message() - стиль меняется здесь и везде сразу.
 const path = require('node:path');
 const fs = require('node:fs');
 const {
@@ -17,17 +17,17 @@ const DIVIDER_FILE = path.join(ROOT, 'assets', 'profile', 'divider.png');
 const DIVIDER_NAME = 'divider.png';
 const DIVIDER = Symbol('divider');
 
-
+// ── Блоки ─────────────────────────────────────────────────────────────
 const text = (content) => ({ type: 'text', content: String(content ?? '').slice(0, 4000) });
-
+/** Разделитель между разделами: картинка-виньетка (если включена) или линия */
 const divider = () => DIVIDER;
-
+/** Тонкая линия / отступ */
 const line = (visible = true, large = false) => ({ type: 'sep', visible, large });
-
+/** Картинка из вложения или ссылки */
 const image = (url, description) => ({ type: 'image', url, description });
-
+/** Текст с миниатюрой справа */
 const section = (content, thumbnailUrl) => ({ type: 'section', content, thumbnailUrl });
-
+/** Ряд кнопок или список (ActionRowBuilder) */
 const row = (actionRow) => ({ type: 'row', row: actionRow });
 
 function build(block, files) {
@@ -54,7 +54,11 @@ function build(block, files) {
     }
 }
 
-
+/**
+ * Готовое сообщение.
+ *   message({ blocks: [text('# Заголовок'), divider(), text('...')], accent: 'primary', files, ephemeral })
+ * accent: 'primary' | 'accent' | 'muted' | 'danger'
+ */
 function message({ blocks = [], accent = 'primary', files = [], ephemeral = false, mentions = [] } = {}) {
     const out = [...files];
     const container = new ContainerBuilder().setAccentColor(hex(COLORS[accent] || COLORS.primary));
@@ -71,12 +75,12 @@ function message({ blocks = [], accent = 'primary', files = [], ephemeral = fals
     return { components: [container], files: out, flags, allowedMentions: { users: mentions } };
 }
 
-
+/** Для interaction.update / editReply: без флага Ephemeral, старые вложения заменяются */
 function forUpdate(payload) {
     return { ...payload, flags: MessageFlags.IsComponentsV2, attachments: [] };
 }
 
-
+/** Короткое уведомление: заголовок + текст */
 function notice(title, body, { accent = 'primary', ephemeral = false, rows = [] } = {}) {
     return message({ accent, ephemeral, blocks: [text(`### ${title}${body ? `\n${body}` : ''}`), ...rows.map(row)] });
 }
@@ -84,7 +88,7 @@ function notice(title, body, { accent = 'primary', ephemeral = false, rows = [] 
 const error = (body) => notice('Ошибка', body, { accent: 'danger', ephemeral: true });
 const success = (title, body, opts = {}) => notice(title, body, { accent: 'primary', ...opts });
 
-
+/** Ответ ошибкой (сам выбирает reply / followUp / editReply) */
 async function replyError(interaction, body) {
     const p = error(body);
     if (interaction.deferred && !interaction.replied) return interaction.editReply(forUpdate(p));
@@ -92,7 +96,7 @@ async function replyError(interaction, body) {
     return interaction.reply(p);
 }
 
-
+/** Текстовая шкала ▰▰▰▱▱ */
 function bar(value, max, size = 12) {
     const filled = Math.max(0, Math.min(size, Math.round((value / Math.max(1, max)) * size)));
     return '▰'.repeat(filled) + '▱'.repeat(size - filled);

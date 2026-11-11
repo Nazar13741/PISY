@@ -1,5 +1,5 @@
-
-
+// Панель редактирования /char redact (админы и кураторы).
+//   кнопки: edit:<раздел>:<id>   формы: editm:<раздел>:<id>
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
 const { config } = require('../core/config');
 const ui = require('../ui/components');
@@ -13,7 +13,7 @@ const { statsText } = require('../ui/profileView');
 
 const log = logger.child('Редактор');
 
-
+// Форма Discord вмещает до 5 полей - длинные списки делим на части
 const chunks = (list) => { const out = []; for (let i = 0; i < list.length; i += 5) out.push(list.slice(i, i + 5)); return out; };
 const statChunks = () => chunks(config.stats.list);
 const repChunks = () => chunks(reputation.factions());
@@ -88,7 +88,7 @@ function modalFor(section, ch) {
     return null;
 }
 
-
+/** Целое число; max = null - без верхнего предела */
 function int(value, min, max, label) {
     const n = Number(String(value).trim());
     const tooBig = max !== null && max !== undefined && n > max;
@@ -98,7 +98,7 @@ function int(value, min, max, label) {
     return n;
 }
 
-
+/** Применяет форму. Возвращает { changes, diff } */
 async function applyModal(section, ch, fields) {
     const v = (id) => fields.getTextInputValue(id)?.trim() || null;
     if (section === 'basic') return { changes: { name: v('name'), race: v('race'), class: v('class'), age: v('age') } };

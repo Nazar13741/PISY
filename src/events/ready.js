@@ -1,4 +1,4 @@
-
+// Бот запустился.
 const { Events, ActivityType } = require('discord.js');
 const { config, env } = require('../core/config');
 const logger = require('../core/logger');
