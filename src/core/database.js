@@ -2,7 +2,7 @@
 
 const fs = require('node:fs');
 const path = require('node:path');
-const sqlite = require('node:sqlite');
+const DatabaseDriver = require('better-sqlite3');
 const { config, ROOT } = require('./config');
 const log = require('./logger').child('База');
 
@@ -67,7 +67,7 @@ class Database {
     constructor(file) {
         this.file = path.isAbsolute(file) ? file : path.join(ROOT, file);
         fs.mkdirSync(path.dirname(this.file), { recursive: true });
-        this.db = new sqlite.DatabaseSync(this.file);
+        this.db = new DatabaseDriver(this.file);
         this.db.exec('PRAGMA journal_mode = WAL; PRAGMA foreign_keys = ON;');
         this.cache = new Map();
         this.migrate();
@@ -104,7 +104,7 @@ class Database {
         const dir = path.join(path.dirname(this.file), 'backups');
         fs.mkdirSync(dir, { recursive: true });
         const name = `bot-${new Date().toISOString().replace(/[:.]/g, '-')}.db`;
-        await sqlite.backup(this.db, path.join(dir, name));
+        await this.db.backup(path.join(dir, name));
         const files = fs.readdirSync(dir).filter((f) => f.endsWith('.db')).sort();
         while (files.length > config.database.keepBackups) fs.unlinkSync(path.join(dir, files.shift()));
         log.info(`Резервная копия базы: data/backups/${name}`);
