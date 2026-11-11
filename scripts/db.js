@@ -65,6 +65,7 @@ const commands = {
 };
 
 (async () => {
+    await db.ready;
     const fn = commands[cmd];
     if (!fn) { console.log(`Неизвестная команда «${cmd}». Доступно: ${Object.keys(commands).join(', ')}`); process.exit(1); }
     await fn(...args);

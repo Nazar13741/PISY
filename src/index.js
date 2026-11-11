@@ -1,12 +1,4 @@
 // Точка входа бота. Запуск: npm start
-const [major, minor] = process.versions.node.split('.').map(Number);
-if (major < 22 || (major === 22 && minor < 13)) {
-    console.error(`Нужен Node.js 22.13 или новее (у вас ${process.versions.node}). Скачайте LTS: https://nodejs.org`);
-    process.exit(1);
-}
-// Прячем предупреждение «SQLite is an experimental feature»
-const emit = process.emitWarning;
-process.emitWarning = (w, ...a) => (String(w).includes('SQLite') ? undefined : emit.call(process, w, ...a));
 
 const { Client, Collection, GatewayIntentBits, Partials } = require('discord.js');
 const { config, env, errors, warnings } = require('./core/config');
@@ -49,6 +41,7 @@ process.on('SIGINT', shutdown);
 process.on('SIGTERM', shutdown);
 
 (async () => {
+    await db.ready;
     if (config.database.backupOnStart) await db.backup().catch((e) => logger.warn('Резервная копия не создана:', e.message));
     await client.login(env.token);
 })().catch((e) => {
